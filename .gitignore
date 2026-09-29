@@ -1,0 +1,35 @@
+__pycache__/
+*.pyc
+*.pyo
+.env*
+!.env.example
+!**/.env.example
+*.log
+*.orig
+backups/
+*.cmsbak
+*.sqlite*
+.analytics_secret
+
+# Local output and private working material are not part of the application.
+/reports/
+/documents/
+/*.zip
+/web/content/**/*.pdf
+/web/content/**/*.docx
+/web/content/**/*.pptx
+/web/content/**/*.xlsx
+/web/AGENTS.md
+/web/CLAUDE.md
+/web/components/MetroInMotion2/
+/web/scripts/verify/
+/web/public/booth/booth-v1.*
+/web/public/booth/booth-v2.js
+/web/public/booth/booth-v3.js
+
+# Local Next.js build output and preview caches.
+.next/
+web/.next-*/
+
+# Local visual-review output.
+reports/case-study-option-b/

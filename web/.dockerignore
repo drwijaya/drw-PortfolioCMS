@@ -1,0 +1,17 @@
+node_modules
+.next*
+.git
+.env
+.env.*
+!.env.example
+*.md
+scripts/*
+!scripts/cms
+!scripts/cms/**
+coverage
+*.log
+
+game-server/dist
+
+.cms-media
+.cms-backups

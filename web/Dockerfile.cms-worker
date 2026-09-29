@@ -1,0 +1,13 @@
+FROM node:22-alpine
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci && mkdir -p /data/media /data/backups && chown -R node:node /data
+COPY --chown=node:node lib ./lib
+COPY --chown=node:node content ./content
+COPY --chown=node:node components/case-study ./components/case-study
+COPY --chown=node:node scripts/cms ./scripts/cms
+COPY --chown=node:node drizzle ./drizzle
+COPY --chown=node:node tsconfig.json ./tsconfig.json
+RUN addgroup -g 1001 -S cms && adduser -S cms -u 1001 -G cms && chown -R cms:cms /data
+USER cms
+CMD ["node", "--import", "tsx", "scripts/cms/worker.ts"]

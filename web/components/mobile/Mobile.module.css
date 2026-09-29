@@ -1,0 +1,242 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   MOBILE CHROME
+
+   The view-transition names for these live in globals.css, not here. Next 16
+   scopes `view-transition-name` inside a CSS module the same way it scopes a
+   class, so `route-dock` compiled to `Mobile-module__JHoqsa__route-dock`
+   while every ::view-transition rule that acts on it went on looking for the
+   plain name. Nothing errored; the chrome simply stopped being pinned. The
+   elements carry `data-chrome` / `data-veil` so a global stylesheet can
+   reach them.
+   Two fixed edges and a scrim. Everything here is display:none above the
+   phone breakpoint, which is also what stops the browser generating a
+   view-transition-name for it on a desktop navigation.
+
+   The ground, the radius and the 3px inner padding are lifted straight
+   from .group in the sidebar. That is deliberate: the bar is not a new
+   component, it is the same pill group laid on its side, which is why it
+   reads as the same site rather than a mobile skin of one.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.header,
+.dock,
+.scrim,
+.veil {
+  display: none;
+}
+
+@media (max-width: 679px) {
+  /* ── top edge ─────────────────────────────────────────────────────── */
+
+  .header {
+    position: fixed;
+    z-index: 50;
+    top: calc(env(safe-area-inset-top, 0px) + var(--dock-edge));
+    left: var(--dock-inset);
+    right: var(--dock-inset);
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    background: var(--pill-rest);
+  }
+
+  /* Pinned to the left edge of the pill while the wordmark stays centred
+     on its own axis — position:absolute rather than a flex edge so the
+     logo never shifts when this button mounts or unmounts crossing into
+     and out of a case study. */
+  .headerBack {
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: var(--text-primary);
+    transition: opacity var(--dur-quick) var(--ease-out);
+  }
+  .headerBack:active {
+    opacity: 0.55;
+    transition-duration: var(--dur-tap);
+  }
+
+  .headerBackArrow {
+    width: 14px;
+    height: 1.5px;
+    background: currentColor;
+    position: relative;
+  }
+  .headerBackArrow::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    border-left: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-50%) rotate(45deg);
+  }
+
+  /* Mirrors .headerBack on the other edge of the pill, on every route —
+     the top strip that used to carry it on desktop is gone on a phone. */
+  .headerToggle {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    place-items: center;
+  }
+
+  /* The bars float 20px in from each edge, so the page scrolls past them
+     in the gutters. These are the bands it dissolves into — the same mask
+     PageHeader.first paints, for the same reason: the ground is a wash, not
+     a flat colour, so a solid rectangle would read as a block sitting on
+     the page rather than as the page itself.
+
+     z-index 46 puts them over the page and the scrim (44) and under the
+     drawer (48) and the bars (50). That order is not only about painting:
+     view-transition groups are captured in paint order, so this is also
+     what keeps the veil above the sliding page during a route change and
+     the drawer above the veil. */
+  .veil {
+    display: block;
+    position: fixed;
+    z-index: 46;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    background-color: var(--bg);
+    background-image: var(--bg-wash);
+    background-size: 100vw 100vh;
+    background-repeat: no-repeat;
+  }
+
+  .veil[data-edge='top'] {
+    top: 0;
+    height: var(--canvas-pad-y);
+    -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+  }
+
+  .veil[data-edge='bottom'] {
+    bottom: 0;
+    height: calc(
+      env(safe-area-inset-bottom, 0px) + var(--dock-edge) * 2 + var(--dock-h) + 14px
+    );
+    background-position: bottom;
+    -webkit-mask-image: linear-gradient(to top, #000 74%, transparent 100%);
+    mask-image: linear-gradient(to top, #000 74%, transparent 100%);
+  }
+
+  .headerMark {
+    display: block;
+    width: 54px;
+    transition: opacity var(--dur-quick) var(--ease-out);
+  }
+  .headerMark:active {
+    opacity: 0.55;
+    transition-duration: var(--dur-tap);
+  }
+
+  .headerMarkImg {
+    width: 100%;
+    height: auto;
+  }
+  :global([data-theme='dark']) .headerMarkImg {
+    filter: invert(1);
+  }
+
+  /* ── bottom edge ──────────────────────────────────────────────────── */
+
+  .dock {
+    position: fixed;
+    z-index: 50;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + var(--dock-edge));
+    left: var(--dock-inset);
+    right: var(--dock-inset);
+    display: flex;
+    align-items: stretch;
+    gap: var(--dock-gap);
+  }
+
+  .bar {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    gap: 0;
+    padding: 3px;
+    border-radius: 16px;
+    background: var(--pill-rest);
+  }
+
+  .chevron {
+    flex: none;
+    width: var(--dock-h);
+    height: var(--dock-h);
+    display: grid;
+    place-items: center;
+    border-radius: 16px;
+    background: var(--pill-rest);
+    color: var(--text-primary);
+    transform-origin: center;
+    transition: transform var(--dur-tap) var(--ease-out),
+      background-color var(--dur-quick) var(--ease-out);
+  }
+  .chevron:active {
+    transform: scale(0.94);
+  }
+
+  /* The glyph turns; the button does not. Rotating the button would fight
+     the press scale on the same property. transform-origin is declared
+     because the default is almost never what was meant (rule 7). */
+  .chevronGlyph {
+    width: 16px;
+    height: 16px;
+    transform-origin: center;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .chevron[data-open] .chevronGlyph {
+    transform: rotate(180deg);
+  }
+
+  @media (max-width: 360px) {
+    .dock {
+      left: 12px;
+      right: 12px;
+      gap: 6px;
+    }
+
+    .chevron {
+      width: 42px;
+    }
+  }
+
+  /* ── the scrim ────────────────────────────────────────────────────── */
+
+  /* Not a blackout. The page stays legible underneath, because the drawer
+     is a supplement to what you are reading, not a modal that replaces it.
+     It exists so a tap anywhere dismisses, which is the gesture people
+     already have for a sheet. */
+  .scrim {
+    display: block;
+    position: fixed;
+    z-index: 44;
+    inset: 0;
+    background: color-mix(in srgb, var(--bg) 62%, transparent);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--dur-base-out) var(--ease-in),
+      visibility 0s linear var(--dur-base-out);
+  }
+  .scrim[data-open] {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity var(--dur-base) var(--ease-out), visibility 0s;
+  }
+}

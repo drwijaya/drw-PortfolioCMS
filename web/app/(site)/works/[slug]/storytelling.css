@@ -1,0 +1,317 @@
+/* Story-specific compositions. Existing source blocks retain their order. */
+.cs-root {
+  --cs-card-corner: 28px;
+  --cs-card-fill: color-mix(in srgb, var(--accent) 4%, var(--surface));
+  --cs-card-label-fill: color-mix(in srgb, var(--accent) 14%, var(--surface));
+}
+body:has(.cs-storytelling) { overflow-x: clip; }
+.cs-storytelling {
+  --cs-prose: 100%;
+  --cs-beat-gap: clamp(36px, 4cqi, 48px);
+}
+.cs-storytelling .cs-beat-context { min-width: 0; }
+.cs-storytelling .cs-beat-intro { max-width: none; }
+.cs-storytelling .cs-beat-heading { max-width: none; }
+.cs-storytelling .cs-headline { max-width: 32ch; font-size: clamp(1.65rem, 3.8cqi, 2.7rem); }
+.cs-storytelling .cs-beat[data-tone] { border-radius: 3px; }
+.cs-storytelling .cs-beat[data-layout='context-stack'] .cs-text,
+.cs-storytelling .cs-beat[data-layout='context-stack'] .cs-lead { max-width: none; }
+.cs-storytelling .cs-byline { border-inline: 0; border-radius: 0; }
+.cs-storytelling .cs-byline-item { background: transparent; padding-left: 0; padding-right: 20px; }
+.cs-storytelling .cs-byline-item + .cs-byline-item { padding-left: 20px; }
+.cs-storytelling .cs-snapshot { border-radius: 3px; }
+.cs-storytelling .cs-evidence { border-radius: 3px; }
+
+/* Prose and reference tables share one full-width reading flow. */
+.cs-storytelling .cs-beat[data-layout='narrative-split'] .cs-beat-blocks {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+.cs-storytelling .cs-beat[data-beat='sensing-principle'] .cs-figure-frame {
+  width: min(100%, 300px);
+}
+.cs-storytelling .cs-beat[data-beat='sensing-principle'] .cs-figure-img {
+  max-height: 260px;
+}
+
+@container cs (min-width: 741px) {
+  .cs-storytelling .cs-beat[data-beat='sensing-principle'] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    column-gap: 28px;
+    align-items: start;
+  }
+  .cs-storytelling .cs-beat[data-beat='sensing-principle'] .cs-beat-blocks { display: contents; }
+  .cs-storytelling .cs-beat[data-beat='sensing-principle'] .cs-beat-context { grid-column: 1; }
+  .cs-storytelling .cs-beat[data-beat='sensing-principle'] .cs-beat-block[data-block-type='figure'] {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}
+
+/* A quieter editorial list gives method sections a different reading rhythm. */
+.cs-storytelling .cs-beat[data-layout='sequence-gallery'] .cs-list.is-numbered { border-top: 1px solid var(--border); }
+.cs-storytelling .cs-beat[data-layout='sequence-gallery'] .cs-list-item { padding-block: 22px; }
+.cs-storytelling .cs-beat[data-layout='signal-band'] .cs-beat-heading { font-size: clamp(1.4rem, 3cqi, 2rem); }
+.cs-storytelling .cs-beat[data-layout='signal-band'] .cs-metric,
+.cs-storytelling .cs-beat[data-layout='signal-band'] .cs-stat { border-radius: 0; background: transparent; }
+.cs-storytelling .cs-beat[data-layout='signal-band'] .cs-stat-value,
+.cs-storytelling .cs-beat[data-layout='signal-band'] .cs-metric-value { font-size: 1.375rem; }
+
+/* Figures stay complete: no cropping, parallax, or movement within a plot. */
+.cs-storytelling .cs-story-figure { margin: 0; min-width: 0; }
+.cs-storytelling .cs-story-figure figcaption { font-size: 0.875rem; line-height: 1.5; margin-top: 14px; color: var(--text-secondary); }
+.cs-story-gallery { min-width: 0; }
+.cs-story-gallery:not([data-enhanced]) .cs-story-panel { margin-bottom: 28px; }
+.cs-story-gallery:not([data-enhanced]) :is(.cs-story-counter, .cs-story-hint, .cs-story-steps) { display: none; }
+.cs-story-gallery[data-enhanced] { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(24px, 4cqi, 48px); align-items: start; }
+.cs-story-stage { min-width: 0; }
+.cs-story-gallery[data-enhanced] .cs-story-stage { position: sticky; top: calc(var(--canvas-pad-y) + 72px); }
+.cs-story-gallery[data-enhanced] .cs-story-stage { align-self: start; }
+.cs-story-counter { display: flex; justify-content: space-between; gap: 12px; padding-block: 14px; border-top: 1px solid var(--border); color: var(--accent); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+.cs-story-panel[hidden] { display: none; }
+.cs-story-gallery[data-enhanced] .cs-story-panel { animation: cs-story-arrive 220ms ease-out; }
+.cs-story-gallery[data-enhanced] .cs-story-panel .cs-figure-frame { height: clamp(240px, 32cqi, 380px); display: grid; align-items: center; }
+.cs-story-gallery[data-enhanced] .cs-story-panel .cs-figure-img { max-height: 360px; max-height: min(360px, 46svh); }
+.cs-story-hint { font-size: 0.75rem; color: var(--text-secondary); margin-top: 18px; }
+.cs-story-steps { list-style: none; padding: 0; margin: 0; }
+.cs-story-gallery[data-enhanced] .cs-story-steps { padding-bottom: var(--story-end-runway, 0px); }
+.cs-story-steps li { padding: 20px 0 28px 20px; border-left: 2px solid var(--border); scroll-margin-top: 180px; transition: border-color 180ms ease-out; }
+.cs-story-steps li[data-active] { border-color: var(--accent); }
+.cs-story-steps button { display: grid; grid-template-columns: 28px 1fr; align-items: baseline; gap: 10px; width: 100%; border: 0; padding: 0; background: transparent; color: var(--text-primary); text-align: left; font: inherit; font-weight: 700; line-height: 1.5; cursor: pointer; min-height: 44px; }
+.cs-story-step-number { color: var(--text-secondary); font-size: 0.8rem; font-weight: 400; }
+.cs-story-steps li[data-active] .cs-story-step-number { color: var(--accent); }
+.cs-story-steps p { margin: 16px 0 0; color: var(--text-secondary); font-size: 1rem; line-height: 1.7; }
+.cs-storytelling button:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+
+/* The experiment is explanatory, and the full source table stays visible. */
+.cs-experiment { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; border-top: 1px solid var(--border); padding-top: 24px; }
+.cs-interactive-kicker { font-size: 0.8rem; color: var(--accent); margin: 0 0 18px; }
+.cs-experiment-controls > p:not(.cs-interactive-kicker) { color: var(--text-secondary); line-height: 1.7; }
+.cs-treatment-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 20px; }
+.cs-treatment-options button { min-height: 92px; display: flex; flex-wrap: wrap; align-content: center; justify-content: space-between; gap: 8px; padding: 16px; font: inherit; border: 1px solid var(--border); background: var(--surface); color: var(--text-primary); cursor: pointer; transition: background-color 180ms ease-out, border-color 180ms ease-out; }
+.cs-treatment-options button[aria-pressed='true'] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); box-shadow: inset 0 0 0 1px var(--accent); }
+.cs-treatment-options small { flex-basis: 100%; color: var(--text-secondary); font-size: 0.75rem; }
+.cs-experiment-result { padding: 24px; background: color-mix(in srgb, var(--accent) 5%, var(--surface)); }
+.cs-response { margin-top: 26px; }
+.cs-response > div:first-child { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; }
+.cs-response strong { font-size: 1.375rem; font-weight: 400; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.cs-response-track { height: 6px; margin-top: 12px; background: color-mix(in srgb, var(--accent) 15%, var(--surface)); overflow: hidden; }
+.cs-response-track span { display: block; height: 100%; background: var(--accent); transform-origin: left; transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1); }
+.cs-response p { font-size: 0.75rem; color: var(--text-secondary); margin-top: 9px; }
+.cs-experiment-verdict { font-size: 1rem; line-height: 1.7; margin: 20px 0 0; padding-top: 20px; border-top: 1px solid var(--border); }
+.cs-experiment-data { grid-column: 1 / -1; min-width: 0; }
+
+@container cs (max-width: 740px) {
+  .cs-story-gallery[data-enhanced] { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .cs-story-gallery[data-enhanced] .cs-story-stage { top: calc(var(--canvas-pad-y) + 56px); z-index: 5; background: var(--bg); padding-bottom: 10px; }
+  .cs-story-gallery[data-enhanced] .cs-story-panel .cs-figure-frame { height: 25svh; min-height: 130px; }
+  .cs-story-gallery[data-enhanced] .cs-story-panel .cs-figure-img { max-height: 25svh; }
+  .cs-story-counter { padding-block: 9px; }
+  .cs-story-figure figcaption { margin-top: 8px; }
+  .cs-story-hint { display: none; }
+  .cs-story-steps li { padding: 20px 0 28px 16px; }
+  .cs-treatment-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cs-experiment { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .cs-experiment-verdict { min-height: 0; }
+  .cs-storytelling .cs-byline-item + .cs-byline-item { padding-left: 0; }
+}
+@media (max-height: 600px) {
+  .cs-story-gallery[data-enhanced] .cs-story-stage { position: static; }
+  .cs-story-gallery[data-enhanced] .cs-story-steps { padding-bottom: 0; }
+}
+@keyframes cs-story-arrive { from { opacity: 0.45; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .cs-story-gallery[data-enhanced] .cs-story-panel { animation: none; }
+  .cs-response-track span, .cs-story-steps li, .cs-treatment-options button { transition: none; }
+  .cs-storytelling .cs-beat[data-layout='data-ledger'] .cs-beat-context { position: static; }
+}
+@media print {
+  .cs-story-gallery[data-enhanced] { display: block; }
+  .cs-story-gallery[data-enhanced] .cs-story-stage { position: static; }
+  .cs-story-panel[hidden] { display: block; }
+  .cs-story-steps li, .cs-story-steps li:last-child { min-height: 0; }
+}
+
+.cs-comparison-controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; }
+.cs-comparison-controls button { min-height: 44px; padding: 10px 16px; background: transparent; border: 1px solid #707782; color: #f5f7fb; font: inherit; font-size: 0.85rem; cursor: pointer; }
+.cs-comparison-controls button[aria-pressed='true'] { color: #0e1014; background: #f5f7fb; border-color: #f5f7fb; }
+.cs-comparison-panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.cs-comparison-panels > div { min-width: 0; }
+.cs-comparison-panels > div[hidden] { display: none; }
+.cs-evidence-comparison:not([data-view='both']) .cs-comparison-panels { grid-template-columns: minmax(0, 1fr); }
+.cs-comparison-label { font-size: 0.8rem; color: #b8bec9; margin-bottom: 14px; }
+@container cs (max-width: 740px) { .cs-comparison-panels { grid-template-columns: minmax(0, 1fr); } }
+@media print { .cs-comparison-panels > div[hidden] { display: block; } }
+
+/* One body-text voice; only headings carry extra weight. */
+.cs-storytelling :is(
+  .cs-hero-sub, .cs-hero-client, .cs-beat-intro, .cs-beat-takeaway,
+  .cs-text, .cs-lead, .cs-list-body, .cs-card-body, .cs-callout-body p,
+  .cs-stat-label, .cs-stat-note, .cs-metric-label, .cs-metric-sub,
+  .cs-compare-before, .cs-compare-after, .cs-table-note,
+  .cs-story-steps p, .cs-story-figure figcaption, .cs-figure figcaption,
+  .cs-interactive-kicker, .cs-experiment-controls p, .cs-experiment-verdict,
+  .cs-response p, .cs-treatment-options small, .cs-footer-note
+) {
+  font-family: var(--font-body-stack);
+  font-size: var(--cs-content-size);
+  font-weight: 400;
+  line-height: var(--cs-content-line-height);
+  font-style: normal;
+  letter-spacing: 0;
+  color: var(--text-primary);
+}
+.cs-storytelling :is(.cs-text, .cs-lead, .cs-callout-body p, .cs-list-body) :is(strong, b) {
+  font-weight: inherit;
+}
+.cs-storytelling :is(.cs-callout-body h3, .cs-callout-body h4) { letter-spacing: 0; }
+.cs-storytelling :is(.cs-text, .cs-lead, .cs-list, .cs-callout, .cs-quote, .cs-beat-takeaway) {
+  max-width: none;
+  width: 100%;
+}
+.cs-storytelling .cs-section { padding-block: clamp(40px, 5cqi, 60px); }
+.cs-storytelling .cs-section-marker { margin-bottom: 24px; }
+.cs-storytelling .cs-section-head { margin-bottom: 28px; }
+.cs-storytelling .cs-beat-intro { margin-bottom: 20px; }
+.cs-storytelling .cs-beat-blocks { gap: 20px; }
+.cs-storytelling .cs-beat-takeaway { margin-top: 20px; }
+.cs-storytelling .cs-section:last-of-type { padding-bottom: 0; }
+.cs-storytelling .cs-footer { padding-top: 24px; }
+.cs-storytelling :is(.cs-stat, .cs-metric) { min-width: 0; padding: 18px; gap: 8px; }
+.cs-storytelling :is(.cs-stat-value, .cs-metric-value) {
+  font-size: 1.375rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.cs-storytelling .cs-metric-label { margin-top: 0; }
+
+/* Intrinsic image dimensions reserve the frame while the request is pending. */
+.cs-image-status {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: var(--surface);
+  color: var(--text-primary);
+  font: 400 1rem/1.6 var(--font-body-stack);
+  text-align: center;
+}
+.cs-image-status[hidden], .cs-image-spinner[hidden] { display: none; }
+.cs-image-status[data-image-status='loading'] { pointer-events: none; }
+.cs-image-status a { color: var(--accent); text-decoration: underline; }
+.cs-image-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: cs-image-spin 800ms linear infinite;
+}
+@keyframes cs-image-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .cs-image-spinner { animation: none; } }
+@media print { .cs-image-status { display: none; } }
+
+/* Numbered editorial notes, with a shared circular marker. */
+.cs-storytelling .cs-list-numbered li { padding-left: 52px; }
+.cs-storytelling .cs-list-numbered li::before,
+.cs-storytelling .cs-story-step-number,
+.cs-storytelling .cs-card-num {
+  width: 34px; height: 34px; display: inline-flex; align-items: center;
+  justify-content: center; border: 1px solid var(--border); border-radius: 50%;
+  color: var(--accent); font-size: 0.7rem; letter-spacing: 0;
+}
+.cs-storytelling .cs-story-steps button { grid-template-columns: 34px 1fr; align-items: center; }
+.cs-storytelling .cs-story-steps li[data-active] .cs-story-step-number { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); }
+.cs-storytelling .cs-list-plain li::before { width: 6px; height: 6px; top: 10px; border-radius: 50%; }
+.cs-storytelling .cs-cards { gap: 24px; }
+.cs-storytelling .cs-card { border: 0; border-top: 2px solid var(--accent); border-radius: 0 0 12px 12px; padding: 20px; background: color-mix(in srgb, var(--accent) 4%, var(--surface)); }
+.cs-storytelling .cs-card-title { margin-bottom: 10px; }
+.cs-storytelling .cs-card-num { margin-bottom: 14px; }
+
+/* Each placement reads as one choice; the recommended pair stays identifiable. */
+.cs-treatment-options button { display: grid; grid-template-columns: 28px minmax(0, 1fr); justify-content: start; align-items: center; align-content: start; min-height: 108px; border-radius: 10px; padding: 14px; gap: 10px; }
+.cs-placement-index { font-size: 0.75rem; color: var(--accent); }
+.cs-placement-pair { text-align: left; }
+.cs-placement-pair > span { white-space: nowrap; }
+.cs-storytelling .cs-treatment-options small { grid-column: 1 / -1; text-align: left; font-size: 0.8rem; }
+.cs-experiment-result { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+.cs-experiment-result > .cs-interactive-kicker { padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.cs-experiment-verdict { border: 0; border-left: 3px solid var(--accent); padding: 12px 16px; background: color-mix(in srgb, var(--accent) 6%, var(--surface)); }
+.cs-storytelling .cs-stats { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; gap: 0; }
+.cs-storytelling .cs-stat { background: transparent; border: 0; border-radius: 0; padding: 22px; }
+.cs-storytelling .cs-stat + .cs-stat { border-left: 1px solid var(--border); }
+.cs-storytelling .cs-stat-value { color: var(--accent); font-variant-numeric: tabular-nums; }
+.cs-storytelling .cs-stat-label { order: -1; }
+@container cs (max-width: 620px) {
+  .cs-storytelling .cs-stat + .cs-stat { border-left: 0; border-top: 1px solid var(--border); }
+  .cs-storytelling .cs-card { padding: 18px; }
+  .cs-treatment-options button { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Shared folded-leaf silhouette for every project-detail card. */
+.cs-root.cs-editorial :is(.cs-card, .cs-pipe-node) {
+  border: 1px solid var(--border);
+  border-radius: var(--cs-card-corner) 0 var(--cs-card-corner) 0;
+  background: var(--cs-card-fill);
+  padding: 22px;
+}
+.cs-root.cs-editorial .cs-card:nth-child(4n + 2),
+.cs-root.cs-editorial .cs-card:nth-child(4n + 3),
+.cs-root.cs-editorial .cs-pipeline > :nth-child(4n + 2) .cs-pipe-node,
+.cs-root.cs-editorial .cs-pipeline > :nth-child(4n + 3) .cs-pipe-node {
+  border-radius: 0 var(--cs-card-corner) 0 var(--cs-card-corner);
+}
+.cs-card-heading { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.cs-root.cs-editorial .cs-card-title { margin: 3px 0 0; min-width: 0; }
+.cs-root.cs-editorial :is(.cs-card-num, .cs-pipe-num, .cs-story-step-number, .cs-placement-index),
+.cs-root.cs-editorial .cs-list-numbered li::before {
+  flex: 0 0 auto;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 34px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--cs-card-label-fill);
+  color: var(--accent);
+  font-size: 0.7rem;
+  line-height: 1;
+  letter-spacing: 0;
+}
+.cs-root.cs-editorial .cs-pipe-num { margin-bottom: 8px; }
+.cs-root .cs-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.cs-root.cs-editorial :is(.cs-list-plain, .cs-persona-cols) li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  top: 0.65em;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.cs-root.cs-editorial .cs-list-numbered li { padding-left: 52px; }
+.cs-root.cs-editorial .cs-pipe-node.is-final,
+.cs-root.cs-editorial :is(.cs-card, .cs-pipe-node):hover { border-color: var(--accent); }
+.cs-treatment-options button { grid-template-columns: 34px minmax(0, 1fr); }
+@container cs (max-width: 620px) {
+  .cs-treatment-options button { grid-template-columns: minmax(0, 1fr); }
+}
+.cs-root.cs-editorial .cs-beat:is([data-tone='accent'], [data-tone='dark']) .cs-card {
+  --cs-card-fill: rgb(255 255 255 / 7%);
+  --cs-card-label-fill: rgb(255 255 255 / 15%);
+}
+.cs-root.cs-editorial .cs-beat:is([data-tone='accent'], [data-tone='dark']) :is(.cs-card-title, .cs-card-body, .cs-card-num) { color: inherit; }
+@container cs (max-width: 620px) {
+  .cs-root.cs-editorial .cs-card { padding: 20px; }
+}

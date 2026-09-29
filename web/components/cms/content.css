@@ -1,0 +1,51 @@
+.cms-public-document {
+  max-width: var(--measure);
+  margin-inline: auto;
+}
+.cms-public-document > .cs-reveal {
+  margin-block: 24px;
+}
+.cms-public-document h2,
+.cms-public-document h3 {
+  font-family: var(--font-display-stack);
+  margin-top: 32px;
+}
+.cms-public-document video,
+.cms-public-document audio {
+  max-width: 100%;
+}
+.cms-public-byline {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.cms-public-list {
+  display: grid;
+  gap: 0;
+}
+.cms-public-list article {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border);
+}
+.cms-public-list h2 {
+  font: 400 28px var(--font-display-stack);
+}
+.cms-public-list p {
+  color: var(--text-secondary);
+}
+.cms-public-list small {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.cms-public-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.cms-public-columns[data-cols="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+@media (max-width: 760px) {
+  .cms-public-columns {
+    grid-template-columns: 1fr !important;
+  }
+}

@@ -1,0 +1,97 @@
+.cms-gutenberg {
+  --wp-admin-theme-color: var(--accent);
+  --wp-admin-theme-color-darker-10: var(--accent-hover);
+  --wp-admin-theme-color-darker-20: var(--pill-active);
+  --wp-admin-border-width-focus: 2px;
+  color: var(--text-primary);
+  font-family: var(--font-body-stack);
+}
+.cms-editor-grid {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr) 260px;
+  min-height: 65vh;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.cms-editor-grid > aside {
+  padding: 16px;
+  overflow: auto;
+  background: var(--bg-alternate);
+}
+.cms-editor-grid > aside:first-child {
+  border-right: 1px solid var(--border);
+}
+.cms-editor-grid > aside:last-child {
+  border-left: 1px solid var(--border);
+}
+.cms-writing {
+  background: var(--surface);
+  padding: 32px;
+  min-width: 0;
+}
+.cms-editor-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 12px 0;
+}
+.cms-block {
+  padding: 12px;
+  position: relative;
+  min-height: 48px;
+}
+.cms-block-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.cms-block img {
+  max-height: 320px;
+  max-width: 100%;
+  object-fit: contain;
+}
+.cms-block p {
+  font-size: 16px;
+  line-height: 1.7;
+}
+.cms-block-settings {
+  padding: 12px;
+}
+.cms-block-summary {
+  font-size: 13px;
+}
+.cms-block-section,
+.cms-block-beat {
+  border: 1px dashed var(--border);
+  margin: 16px 0;
+  border-radius: var(--radius-sm);
+}
+.cms-gutenberg .components-panel__body,
+.cms-gutenberg .components-panel,
+.cms-gutenberg .block-editor-block-inspector {
+  background: var(--bg-alternate);
+  color: var(--text-primary);
+}
+@media (max-width: 1200px) {
+  .cms-editor-grid {
+    grid-template-columns: minmax(0, 1fr) 240px;
+  }
+  .cms-editor-grid > aside:first-child {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .cms-editor-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  .cms-writing {
+    padding: 16px;
+  }
+  .cms-editor-grid > aside:last-child {
+    border-left: 0;
+    border-top: 1px solid var(--border);
+  }
+}

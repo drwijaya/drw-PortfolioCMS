@@ -1,0 +1,73 @@
+services:
+  portfolio:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+        NEXT_PUBLIC_ANALYTICS_API_URL: ${NEXT_PUBLIC_ANALYTICS_API_URL}
+    container_name: drw-portfolio
+    restart: unless-stopped
+    depends_on:
+      analytics-api:
+        condition: service_healthy
+    # Host 5000 deliberately: the casaos cloudflared tunnel already routes
+    # davidrwijaya.site -> localhost:5000, so this swap needs no change to
+    # a config that also serves six other services. Bind only on loopback so
+    # requests cannot bypass Cloudflare and spoof its trusted client-IP header.
+    ports:
+      - "127.0.0.1:5000:3000"
+    environment:
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+      - NEXT_PUBLIC_ANALYTICS_API_URL=${NEXT_PUBLIC_ANALYTICS_API_URL}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - CONTACT_FROM=${CONTACT_FROM:-}
+      - CONTACT_TO=${CONTACT_TO}
+      - PANTRY_API_URL=http://game-api:8081
+
+  game-api:
+    build:
+      context: .
+      dockerfile: game-server/Dockerfile
+    container_name: drw-pantry-api
+    restart: unless-stopped
+    cpus: 1.0
+    mem_limit: 384m
+    pids_limit: 100
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - PANTRY_ORIGINS=${NEXT_PUBLIC_SITE_URL},http://127.0.0.1:5120
+      - COOKIE_SECURE=true
+      - PANTRY_RANKED=${PANTRY_RANKED:-on}
+      - PANTRY_SUBMISSIONS=${PANTRY_SUBMISSIONS:-on}
+    volumes:
+      - pantry-data:/data
+
+  analytics-api:
+    build:
+      context: ../analytics-api
+    container_name: drw-analytics-api
+    restart: unless-stopped
+    ports:
+      # 5001 and 5002 belong to existing services on this host.
+      # Cloudflare Tunnel should route api.davidrwijaya.site to localhost:5003.
+      - "127.0.0.1:5003:8080"
+    environment:
+      - ANALYTICS_SECRET=${ANALYTICS_SECRET:-}
+      - ANALYTICS_ALLOWED_ORIGINS=${ANALYTICS_ALLOWED_ORIGINS}
+      - ANALYTICS_RETENTION_DAYS=${ANALYTICS_RETENTION_DAYS:-730}
+      - ANALYTICS_PRIVACY_THRESHOLD=${ANALYTICS_PRIVACY_THRESHOLD:-5}
+    volumes:
+      - analytics-data:/data
+
+volumes:
+  pantry-data:
+  analytics-data:

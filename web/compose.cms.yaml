@@ -1,0 +1,69 @@
+# Opt-in CMS deployment overlay; never applied automatically.
+# docker compose -f compose.yaml -f compose.cms.yaml --env-file .env.cms up -d --build
+services:
+  portfolio:
+    image: drw-portfolio:cms-admin-ui-20260929
+    environment: &cms-environment
+      CMS_CONTENT_SOURCE: database
+      DATABASE_URL: postgresql://cms:${CMS_DATABASE_PASSWORD:?required}@cms-db:5432/portfolio_cms
+      BETTER_AUTH_URL: ${NEXT_PUBLIC_SITE_URL:?required}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?required}
+      CMS_ENCRYPTION_KEY: ${CMS_ENCRYPTION_KEY:?required}
+      CMS_OWNER_EMAIL: ${CMS_OWNER_EMAIL:?required}
+      CMS_ACCESS_MODE: ${CMS_ACCESS_MODE:-cloudflare}
+      CF_ACCESS_ISSUER: ${CF_ACCESS_ISSUER:-}
+      CF_ACCESS_AUD: ${CF_ACCESS_AUD:-}
+      CMS_MEDIA_DIR: /data/media
+      CMS_BACKUP_DIR: /data/backups
+      CMS_SMTP_ALLOWED_HOSTS: ${CMS_SMTP_ALLOWED_HOSTS:-}
+      CMS_ANALYTICS_INTERNAL_URL: http://analytics-api:8080
+      CMS_ANALYTICS_SERVICE_TOKEN: ${CMS_ANALYTICS_SERVICE_TOKEN:?required}
+    volumes:
+      - cms-media:/data/media
+      - cms-backups:/data/backups
+    depends_on:
+      cms-db:
+        condition: service_healthy
+  cms-db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cms
+      POSTGRES_PASSWORD: ${CMS_DATABASE_PASSWORD:?required}
+      POSTGRES_DB: portfolio_cms
+    volumes:
+      - cms-database:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U cms -d portfolio_cms']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  cms-worker:
+    image: drw-cms-worker:candidate-20260928
+    build:
+      context: .
+      dockerfile: Dockerfile.cms-worker
+    restart: unless-stopped
+    environment:
+      <<: *cms-environment
+      NODE_ENV: production
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      CONTACT_FROM: ${CONTACT_FROM:-}
+      CONTACT_TO: ${CONTACT_TO:-}
+    volumes:
+      - cms-media:/data/media
+      - cms-backups:/data/backups
+    depends_on:
+      cms-db:
+        condition: service_healthy
+  analytics-api:
+    environment:
+      CMS_ANALYTICS_SERVICE_TOKEN: ${CMS_ANALYTICS_SERVICE_TOKEN:?required}
+volumes:
+  cms-database:
+  cms-media:
+  cms-backups:

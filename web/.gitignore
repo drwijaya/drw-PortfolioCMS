@@ -1,0 +1,17 @@
+node_modules/
+.next/
+.next-analytics-check/
+.next-analytics-dev/
+out/
+reports/
+.env*.local
+next-env.d.ts
+*.tsbuildinfo
+
+game-server/dist/
+
+# CMS local build caches, private media, and encrypted backups
+.next-cms*/
+.cms-media/
+.cms-backups/
+.env.cms

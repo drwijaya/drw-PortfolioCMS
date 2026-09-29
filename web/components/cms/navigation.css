@@ -1,0 +1,26 @@
+.cms-nav-overflow {
+  display: none;
+}
+.cms-nav-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-block: 12px;
+  font-size: 12px;
+}
+.cms-nav-footer a,
+.cms-nav-overflow a {
+  color: var(--text-secondary);
+}
+@media (max-width: 679px) {
+  .cms-nav-overflow {
+    display: grid;
+    gap: 10px;
+    padding-block: 12px;
+  }
+  .cms-nav-overflow a {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 10px 16px;
+  }
+}

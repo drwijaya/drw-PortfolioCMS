@@ -1,0 +1,61 @@
+@font-face{font-family:IslandPixel;src:url('/fonts/vt323/VT323-Regular.ttf') format('truetype');font-display:swap}
+body{overflow:auto;background:var(--sand)}
+#booth{height:auto;min-height:var(--vh);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:12px 8px}
+.booth-display{position:relative;aspect-ratio:4/3;max-width:100%;overflow:hidden;outline:2px solid var(--ink);background:var(--paper)}
+.booth-logical{position:absolute;top:0;left:0;width:480px;height:360px;transform-origin:top left;container:booth-screen / size;display:grid;grid-template-rows:44px minmax(0,1fr) 76px;background:var(--paper);font-size:14px}
+header,footer{background:var(--paper)}
+.stage{box-sizing:border-box;height:100%;min-height:0;width:100%;padding:8px;overflow:auto;overscroll-behavior:contain;container-type:size}
+.retro-controls{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px;padding:8px 16px max(12px,env(safe-area-inset-bottom));font:20px IslandPixel,monospace}
+.retro-controls button{width:56px;height:56px;border:3px solid var(--ink);border-radius:50%;font:28px IslandPixel,monospace;box-shadow:2px 3px var(--ink);touch-action:manipulation}
+.retro-controls button:nth-child(2){width:64px;height:44px;border-radius:0;font-size:18px}
+.retro-controls button:nth-child(3){background:var(--accent);color:var(--paper)}
+.retro-controls button:disabled{background:var(--sand);color:var(--ink);box-shadow:none}
+.retro-controls span{width:100%;text-align:center;font-size:18px}
+
+.booth-logical header{padding:4px 8px;gap:4px}.booth-logical header button{min-width:32px;min-height:32px;padding:4px}
+.booth-logical .location{font-size:10px}.booth-logical .steps{font-size:10px;gap:8px;margin:0 4px}.booth-logical .steps span{display:none}
+.booth-logical footer{padding:4px 8px;gap:4px}.booth-logical footer p{font-size:10px;line-height:1.2;margin:0;max-height:24px}
+.booth-logical .footer-actions button,.booth-logical .footer-actions .button{min-height:32px;font-size:12px;padding:5px 8px}
+.booth-logical .layout-stage{grid-template-rows:32px minmax(0,1fr) 32px;gap:6px}.booth-logical .screen-heading h1{font-size:20px;margin:0}.booth-logical .screen-heading p,.booth-logical .eyebrow{display:none}
+.booth-logical .layout-cards>button{padding:4px;gap:3px}.booth-logical .layout-cards strong{font-size:12px}.booth-logical .layout-cards>button>span{display:none}.booth-logical .mobile-layout-tabs button{min-height:28px;padding:3px 8px}
+.booth-logical .capture-stage{grid-template-columns:minmax(0,1fr) 80px;grid-template-rows:minmax(0,1fr);gap:8px}.booth-logical .capture-slots{flex-direction:column}.booth-logical .capture-heading h1{font-size:18px}.booth-logical .camera-controls{gap:4px;font-size:10px}.booth-logical .camera-controls button,.booth-logical .camera-controls select{min-height:28px;padding:2px;font-size:10px}
+.booth-logical .finish-stage{grid-template-columns:minmax(0,1fr) 245px;grid-template-rows:1fr;gap:10px}.booth-logical .print-area h1{font-size:18px}.booth-logical .tool-tabs button{min-height:28px;font-size:10px;padding:4px}.booth-logical .tool-content label{font-size:11px}.booth-logical .tool-content select,.booth-logical .tool-content input[type=text]{min-height:28px;padding:3px}
+.booth-logical .tray{padding:10px}.booth-logical .tray-inner{padding:12px}.booth-logical .tools.floating{position:absolute;inset:8px;padding:10px}
+/* A compact handheld shell; controls stay physical while the picture scales. */
+.retro-controls{display:grid;grid-template-columns:124px 124px;gap:8px 24px;padding:8px;align-items:center}
+.retro-controls[hidden]{display:none}
+.booth-stick{width:116px;height:116px;border:3px solid var(--ink);border-radius:50%;position:relative;touch-action:none;background:var(--paper);box-shadow:inset 0 0 0 5px var(--sand)}
+.retro-controls .booth-knob{position:absolute;width:46px;height:46px;left:32px;top:32px;border:4px double var(--paper);border-radius:50%;background:var(--ink)}
+.booth-actions{display:grid;grid-template-columns:56px 56px;grid-template-rows:56px 56px;gap:0 8px}
+.retro-controls .booth-actions button{width:56px;height:56px;min-width:0;border-radius:50%;font-size:30px}
+.retro-controls .booth-actions button:first-child{grid-column:2;background:var(--accent);color:var(--paper)}
+.retro-controls .booth-actions button:nth-child(2){grid-column:1;grid-row:2;background:var(--paper);color:var(--ink)}
+.booth-control-legend{grid-column:1/-1;margin:0;text-align:center;font:18px/1 IslandPixel,monospace;max-width:280px}
+.booth-logical{font-family:IslandPixel,monospace;font-size:24px;grid-template-rows:40px minmax(0,1fr) 52px}
+.booth-logical [data-game-focus]{outline:3px solid var(--accent);outline-offset:2px;box-shadow:inset 3px 0 var(--accent)}
+.booth-logical h1,.booth-logical h2{font-family:IslandPixel,monospace;font-size:28px}
+.booth-logical .location{font:20px IslandPixel,monospace}.booth-logical .steps{font:20px IslandPixel,monospace}
+.booth-logical .layout-cards strong{font:24px IslandPixel,monospace}.booth-logical .mobile-layout-tabs button{font:22px IslandPixel,monospace}
+.booth-logical .footer-actions button,.booth-logical .footer-actions .button{font:22px IslandPixel,monospace;padding:4px 8px}
+.booth-logical footer p{display:none}.booth-logical footer{justify-content:flex-end}
+.booth-logical .camera-controls,.booth-logical .camera-controls button,.booth-logical .camera-controls select{font:20px IslandPixel,monospace}
+.booth-logical .tool-tabs button{font:20px IslandPixel,monospace}.booth-logical .tool-content label{font:22px IslandPixel,monospace}
+.booth-logical .tool-content select,.booth-logical .tool-content input[type=text]{font:22px IslandPixel,monospace}
+.booth-logical .tray-inner{font:24px/1.1 IslandPixel,monospace}.booth-logical .tray-inner button{font:24px IslandPixel,monospace}
+/* The booth's old ring cursor is no longer part of the handheld shell. Its
+   script still marks fine-pointer sessions as cursor-ready, so explicitly
+   restore native pointer semantics instead of leaving both cursors hidden. */
+body #cursor{display:none!important}
+body.cursor-ready,body.cursor-ready *{cursor:auto!important}
+body.cursor-ready :is(button,a[href],select,summary,label,.button,input[type=file],input[type=range],input[type=checkbox]){cursor:pointer!important}
+body.cursor-ready :is(input[type=text],textarea,[contenteditable=true]){cursor:text!important}
+body.cursor-ready button:disabled{cursor:default!important}
+.booth-logical header{min-height:0;max-height:40px;overflow:hidden;gap:4px}.booth-logical .location{font-size:0}.booth-logical .location strong{font:24px IslandPixel,monospace;white-space:nowrap}
+.booth-logical footer{min-height:0;height:52px;flex-direction:row;align-items:center;padding:6px 8px}.booth-logical .footer-actions{flex-direction:row;width:auto;max-width:100%;gap:6px}.booth-logical .footer-actions>*{flex:none}
+.booth-logical .layout-stage{grid-template-rows:32px minmax(0,1fr) 32px;gap:8px}.booth-logical .layout-cards>button{width:50%}
+.retro-controls[data-swapped=true] .booth-stick{grid-column:2;grid-row:1}.retro-controls[data-swapped=true] .booth-actions{grid-column:1;grid-row:1}
+.retro-controls:has(.booth-pad){grid-template-columns:132px 124px;column-gap:16px}
+.retro-controls .booth-pad{display:grid;width:132px;height:132px;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);border:0;background:none;box-shadow:none}
+.retro-controls .booth-pad .booth-knob{display:none}
+.retro-controls .booth-pad button{border:2px solid var(--ink);border-radius:0;width:44px;height:44px;min-height:44px;min-width:44px;padding:0;font:24px IslandPixel;background:var(--paper);color:var(--ink);box-shadow:none;touch-action:none}
+.booth-pad [data-direction=Up]{grid-area:1/2}.booth-pad [data-direction=Down]{grid-area:3/2}.booth-pad [data-direction=Left]{grid-area:2/1}.booth-pad [data-direction=Right]{grid-area:2/3}

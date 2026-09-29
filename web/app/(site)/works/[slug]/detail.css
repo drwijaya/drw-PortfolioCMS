@@ -1,0 +1,591 @@
+/* ==========================================================================
+   PROJECT DETAIL: Quality Control SOP & Dashboard scrollytelling
+   drw.os v2.3: Warm Minimal, data-driven, no images
+   ========================================================================== */
+
+/* ---- NAV ---- */
+.pd-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.pd-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-quick) var(--ease-out),
+    border-color var(--dur-quick) var(--ease-out),
+    color var(--dur-quick) var(--ease-out);
+}
+.pd-back-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.pd-nav-title {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
+/* ---- CONTENT CONTAINER ---- */
+.pd-content {
+  padding: 0;
+  overflow-y: auto;
+}
+
+/* ---- HERO ---- */
+.pd-hero {
+  padding: 48px 28px 36px;
+  text-align: center;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.pd-hero-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  background: var(--accent);
+  color: var(--bg);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+.pd-hero-title {
+  font-family: var(--font-body);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+}
+.pd-hero-sub {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto 20px;
+  line-height: 1.7;
+}
+.pd-hero-meta {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+}
+.pd-hero-meta i {
+  color: var(--accent);
+  margin-right: 4px;
+}
+
+/* ---- SECTION ---- */
+.pd-section {
+  padding: 40px 28px;
+  border-bottom: 1px solid var(--border);
+}
+.pd-section-label {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  color: var(--accent);
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+}
+.pd-section-text {
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  line-height: 1.75;
+  margin: 0 0 14px 0;
+}
+.pd-section-text strong {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ---- STAT ROW (5-8% → <3%) ---- */
+.pd-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.pd-stat-card {
+  padding: 20px 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  text-align: center;
+  min-width: 130px;
+}
+.pd-stat-card-target {
+  border-color: var(--accent);
+  background: rgba(181, 101, 74, 0.06);
+}
+.pd-stat-value {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.pd-stat-label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  margin-top: 4px;
+}
+.pd-stat-arrow {
+  font-size: 1.4rem;
+  color: var(--text-secondary);
+}
+
+/* ---- STEP TRACKER ---- */
+.pd-step-tracker {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.pd-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 80px;
+  text-align: center;
+}
+.pd-step span {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  line-height: 1.3;
+}
+.pd-step-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.pd-step-connector {
+  width: 24px;
+  height: 2px;
+  background: var(--border);
+  margin-top: 15px;
+  flex-shrink: 0;
+}
+
+/* ---- PIPELINE (6 quality gates) ---- */
+.pd-pipeline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.pd-pipe-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  min-width: 70px;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  color: var(--text-primary);
+}
+.pd-pipe-node span {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 3px;
+}
+.pd-pipe-final {
+  border-color: var(--accent);
+  background: rgba(181, 101, 74, 0.06);
+}
+.pd-pipe-arrow {
+  font-size: 1rem;
+  color: var(--accent);
+  padding: 0 4px;
+  font-weight: 700;
+}
+
+/* ---- MODULE GRID (8 dashboard modules) ---- */
+.pd-module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+.pd-module-card {
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.pd-module-num {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.pd-module-desc {
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+.pd-module-desc small {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  margin-top: 2px;
+}
+
+/* ---- KPI GRID ---- */
+.pd-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.pd-kpi-card {
+  padding: 20px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+.pd-kpi-green {
+  border-color: var(--accent);
+  background: rgba(181, 101, 74, 0.06);
+}
+.pd-kpi-big {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+.pd-kpi-desc {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.pd-kpi-sub {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  margin-top: 3px;
+}
+
+/* ---- BEFORE/AFTER ROWS ---- */
+.pd-results-grid {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pd-result-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.pd-result-before {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-decoration: line-through;
+  text-decoration-color: rgba(181, 101, 74, 0.3);
+}
+.pd-result-arrow {
+  font-size: 1rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+.pd-result-after {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---- ROLE CARD ---- */
+.pd-role-card {
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.pd-role-card p {
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  line-height: 1.75;
+  margin: 0 0 12px 0;
+}
+.pd-role-card p:last-child { margin-bottom: 0; }
+
+/* ---- TAG CLOUD ---- */
+.pd-tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pd-tag {
+  display: inline-block;
+  padding: 5px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: var(--text-primary);
+}
+
+/* ---- IMPACT BLOCK ---- */
+.pd-impact-block {
+  padding: 20px 24px;
+  background: rgba(181, 101, 74, 0.06);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.pd-impact-block p {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ---- FOOTER ---- */
+.pd-footer {
+  display: flex;
+  gap: 10px;
+  padding: 24px 28px;
+  border-top: 1px solid var(--border);
+}
+.pd-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-quick) var(--ease-out),
+    border-color var(--dur-quick) var(--ease-out),
+    color var(--dur-quick) var(--ease-out);
+}
+.pd-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.pd-btn-back {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+.pd-btn-back:hover {
+  opacity: 0.9;
+}
+
+/* ---- ANIMATIONS ---- */
+.reveal-fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--dur-tell) var(--ease-out),
+    transform var(--dur-tell) var(--ease-out);
+}
+.reveal-fade-up.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   COMPACT DETAIL: the view a project gets before it has a case study.
+   CompactDetail.tsx renders .detail-* class names; everything above this
+   line is .pd-*, from the drw.os build, and matches nothing any more. The
+   compact view had no styles at all until a project without a case study
+   existed. Same language as /about and /journal: one centred column,
+   compact labels, hairlines, outlined pills.
+   ========================================================================== */
+
+.detail-page-content {
+  container-type: inline-size;
+  container-name: dt;
+  max-width: 940px;
+  margin-inline: auto;
+}
+
+/* ---- nav ---- */
+.detail-page-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  margin-bottom: clamp(28px, 4cqi, 44px);
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-page-back {
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  transition: color var(--dur-quick) var(--ease-out);
+}
+.detail-page-back:hover {
+  color: var(--accent);
+}
+
+.detail-page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.detail-page-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: var(--bg);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  transition: color var(--dur-quick) var(--ease-out),
+    border-color var(--dur-quick) var(--ease-out),
+    background-color var(--dur-quick) var(--ease-out),
+    transform var(--dur-tap) var(--ease-out);
+}
+.detail-page-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.detail-page-btn:active {
+  transform: scale(0.97);
+}
+
+/* the live site is the point of this view, so it carries the accent */
+.detail-page-demo {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+.detail-page-demo:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: var(--bg);
+}
+
+/* ---- hero ---- */
+.detail-hero {
+  margin-bottom: clamp(24px, 3cqi, 36px);
+}
+
+.detail-eyebrow {
+  display: block;
+  margin-bottom: 14px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+}
+
+.detail-title {
+  font-family: var(--font-display-stack);
+  font-size: clamp(1.7rem, 4cqi, 2.6rem);
+  font-weight: 400;
+  line-height: 1.14;
+  letter-spacing: -0.005em;
+  max-width: 20ch;
+  text-wrap: balance;
+  color: var(--text-primary);
+}
+
+.detail-sub {
+  margin-top: 16px;
+  max-width: 62ch;
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.detail-tags {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ---- footer note ---- */
+.detail-note {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  text-align: left;
+}
+
+@container dt (max-width: 520px) {
+  .detail-page-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

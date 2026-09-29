@@ -1,0 +1,543 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   ONE PROJECT COMPONENT SET
+   The landing and /projects use the same tile and the same row. The view
+   is a setting, not a different page.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── masonry ──────────────────────────────────────────────────────── */
+
+/* Two columns across the full canvas, so the tiles end where the page
+   header's rule ends. The canvas cap (--canvas-max) is the only width
+   limit the grid needs. */
+.masonry {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  column-gap: 28px;
+  row-gap: 56px;
+}
+
+@media (max-width: 899px) {
+  .masonry {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 36px;
+  }
+}
+
+/* ── tile ─────────────────────────────────────────────────────────── */
+
+.tile {
+  display: block;
+}
+
+.tileFeatured .capType {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+  color: var(--accent);
+}
+
+.tileLink {
+  display: block;
+  transform-origin: bottom center;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--bg-alternate);
+  transform-origin: bottom center;
+}
+
+/* No aspect-ratio and no object-fit: the image keeps its own proportions
+   and the frame takes the height it needs. */
+.img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: saturate(0.92);
+  transition: filter var(--dur-base) var(--ease-out);
+}
+
+/* ── hover: the outline draws, nothing moves ──────────────────────────
+   The tile used to lift 4px. It does not any more: the frames morph into
+   rows through layoutId, and a box that is also translating fights that
+   interpolation. The event is a hairline travelling the perimeter and the
+   project's own tags arriving behind it. */
+
+.outline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.outlineRect {
+  fill: none;
+  stroke: var(--accent);
+  /* 4, not 2. The stroke is centred on the frame's edge and .frame clips
+     its own overflow, so exactly half survives: a crisp 2px inner line
+     that follows the corner radius with no half-pixel seam. 2 gave 1px,
+     which disappeared into a busy thumbnail. */
+  stroke-width: 4;
+  /* pathLength="1" normalises the perimeter, so one dash covers the whole
+     rect at any tile size. No measuring and no JavaScript. */
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset var(--dur-move-out) var(--ease-move);
+}
+
+.tagRow {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  pointer-events: none;
+}
+
+/* The site's standard tag. A solid --bg fill is what lets these read over
+   any thumbnail without a scrim under them. */
+.tileTag {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: var(--bg);
+  font-size: 0.62rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity var(--dur-base-out) var(--ease-out),
+    transform var(--dur-base-out) var(--ease-out);
+}
+
+/* Pointer motion is capability-based so hybrid laptops keep their trackpad
+   feedback while touch-only devices avoid a sticky hover state. */
+@media (any-hover: hover) and (any-pointer: fine) {
+  .tileLink:hover .img {
+    filter: saturate(1);
+  }
+
+  .tileLink:hover .outlineRect {
+    stroke-dashoffset: 0;
+    transition-duration: var(--dur-move);
+  }
+
+  /* held until the line is most of the way round, then 34ms apart */
+  .tileLink:hover .tileTag {
+    opacity: 1;
+    transform: none;
+    transition-duration: var(--dur-base);
+  }
+  .tileLink:hover .tileTag:nth-child(1) { transition-delay: 120ms; }
+  .tileLink:hover .tileTag:nth-child(2) { transition-delay: 154ms; }
+  .tileLink:hover .tileTag:nth-child(3) { transition-delay: 188ms; }
+}
+
+/* focus-visible equals hover plus a ring. */
+.tileLink:focus-visible {
+  outline: none;
+}
+
+.tileLink:focus-visible .frame {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.tileLink:focus-visible .img {
+  filter: saturate(1);
+}
+
+.tileLink:focus-visible .outlineRect {
+  stroke-dashoffset: 0;
+  transition-duration: var(--dur-move);
+}
+
+.tileLink:focus-visible .tileTag {
+  opacity: 1;
+  transform: none;
+  transition-duration: var(--dur-base);
+}
+
+.tileLink:active {
+  transform: scale(0.99);
+  transition-duration: var(--dur-tap);
+}
+
+/* ── caption ──────────────────────────────────────────────────────── */
+
+.cap {
+  margin-top: 14px;
+}
+
+.capTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: var(--step-1);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.capMeta {
+  margin-top: 7px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px 10px;
+  font-size: var(--step--1);
+  color: var(--text-secondary);
+  text-align: left;
+}
+
+.capType {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: var(--step--2);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.capDesc {
+  margin-top: 7px;
+  font-size: var(--step--1);
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 52ch;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.capCta {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: var(--step--1);
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: color var(--dur-quick) var(--ease-out);
+}
+
+.capCta span {
+  color: var(--accent);
+  transform: translateX(-4px);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.tileLink:hover .capCta,
+.tileLink:focus-visible .capCta { color: var(--accent); }
+
+.tileLink:hover .capCta span,
+.tileLink:focus-visible .capCta span { transform: none; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 9px;
+  border-radius: var(--radius-full);
+  background: var(--bg-alternate);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+.chip::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-secondary);
+}
+
+/* ── list view ────────────────────────────────────────────────────── */
+
+.table {
+  border-top: 1px solid var(--border);
+}
+
+.row {
+  border-bottom: 1px solid var(--border);
+}
+
+.rowLink {
+  display: grid;
+  grid-template-columns: 48px 72px 1fr 220px 64px 32px;
+  align-items: center;
+  gap: 18px;
+  min-height: 84px;
+  padding: 0 8px;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+/* Dimming the siblings is what makes the interaction read as deliberate
+   rather than decorative. Pure CSS, no JS involved. */
+.table:hover .row:not(:hover) {
+  opacity: 0.35;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.rowLink:hover,
+.rowLink:focus-visible {
+  transform: translateX(12px);
+  outline: none;
+}
+.rowLink:focus-visible {
+  box-shadow: -12px 0 0 -10px var(--accent);
+}
+
+.rowIndex {
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+.rowThumb {
+  display: block;
+  width: 64px;
+  height: 44px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--bg-alternate);
+}
+.rowThumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rowTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: var(--step-2);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  transition: color var(--dur-base) var(--ease-out);
+}
+
+.rowIdentity {
+  min-width: 0;
+}
+
+.rowLink:hover .rowTitle,
+.rowLink:focus-visible .rowTitle {
+  color: var(--accent);
+}
+
+.rowMuted .rowTitle {
+  color: var(--text-secondary);
+}
+
+.rowMeta,
+.rowYear {
+  font-size: var(--step--1);
+  color: var(--text-secondary);
+}
+.rowYear {
+  font-variant-numeric: tabular-nums;
+}
+
+.rowArrow {
+  opacity: 0;
+  transform: translateX(-8px);
+  color: var(--accent);
+  transition: opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+.rowLink:hover .rowArrow,
+.rowLink:focus-visible .rowArrow {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── the floating thumbnail (list view only) ──────────────────────── */
+
+.floatThumb {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  pointer-events: none;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  opacity: 0;
+  box-shadow: var(--shadow-thumb);
+  will-change: transform, opacity;
+}
+
+.floatImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  opacity: 0;
+  transition: opacity var(--dur-quick) linear;
+}
+.floatOn {
+  opacity: 1;
+}
+
+/* ── compact Playground rail on /works ───────────────────────────── */
+
+.indexCount {
+  font-size: var(--step--1);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.playgroundEmpty {
+  color: var(--text-secondary);
+  max-width: 42ch;
+}
+
+.playgroundAllLink {
+  color: var(--text-primary);
+  font-size: var(--step--1);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.playgroundAllLink span {
+  color: var(--accent);
+}
+
+.playgroundAllLink:hover,
+.playgroundAllLink:focus-visible {
+  color: var(--accent);
+}
+
+.playgroundAllLink:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.playgroundCarousel {
+  min-width: 0;
+}
+
+.playgroundRail {
+  display: flex;
+  gap: 22px;
+  overflow-x: auto;
+  padding: 2px 2px 14px;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.playgroundRail:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.playgroundSlide {
+  flex: 0 0 clamp(240px, 24vw, 300px);
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+.playgroundCompact .cap {
+  margin-top: 10px;
+}
+
+.playgroundCompact .capTitle {
+  font-size: var(--step-0);
+}
+
+.playgroundCompact .capMeta,
+.playgroundCompact .capDesc,
+.playgroundCompact .capCta {
+  font-size: var(--step--2);
+}
+
+.playgroundCompact .capDesc {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.playgroundControls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.playgroundControls button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  background: var(--bg-alternate);
+  cursor: pointer;
+}
+
+.playgroundControls button:hover:not(:disabled),
+.playgroundControls button:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.playgroundControls button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+@media (max-width: 899px) {
+  .rowLink {
+    grid-template-columns: 64px 1fr 56px;
+    gap: 12px;
+    min-height: 0;
+    padding: 14px 4px;
+  }
+  .rowIndex,
+  .rowMeta,
+  .rowArrow {
+    display: none;
+  }
+  .rowTitle {
+    font-size: var(--step-1);
+  }
+  .table:hover .row:not(:hover) {
+    opacity: 1;
+  }
+  .rowLink:hover {
+    transform: none;
+  }
+  .playgroundSlide {
+    flex-basis: min(78vw, 300px);
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .floatThumb {
+    display: none;
+  }
+  .table:hover .row:not(:hover) {
+    opacity: 1;
+  }
+}

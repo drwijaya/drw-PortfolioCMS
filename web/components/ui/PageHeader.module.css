@@ -1,0 +1,123 @@
+.row {
+  margin: 84px 0 26px;
+  padding-bottom: 10px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.first {
+  --sticky-top: var(--canvas-pad-y);
+  position: sticky;
+  top: var(--sticky-top);
+  z-index: 10;
+  isolation: isolate;
+  margin-top: 0;
+  padding-top: 10px;
+  /* the mask below paints the whole bar */
+  background: transparent;
+}
+
+/* The mask that hides whatever scrolls underneath. It cannot be a flat
+   --bg any more: the page ground is a wash, and a flat rectangle of the
+   wash's inner stop reads as a pink block sitting on white. Painting the
+   wash itself with `background-attachment: fixed` anchors the gradient to
+   the viewport instead of to this box, so the mask resolves to exactly the
+   pixels it covers. The soft foot moves to a mask-image, because the fade
+   can no longer live in the colour.
+   iOS Safari has never honoured fixed attachment; there the gradient falls
+   back to this box and the bar carries a faint warm corner. That is the
+   worst case, and it is far quieter than the flat block it replaces. */
+.first::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  top: calc(var(--sticky-top) * -1);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: var(--bg-wash);
+  background-attachment: fixed;
+  background-color: var(--bg);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 68%,
+    rgba(0, 0, 0, 0.94) 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 68%,
+    rgba(0, 0, 0, 0.94) 100%
+  );
+}
+
+.first > * {
+  position: relative;
+  z-index: 1;
+}
+
+.headingGroup {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* The page name stays quiet; the section that has scrolled under the bar
+   takes the emphasis. */
+.crumb {
+  display: inline-flex;
+  align-items: baseline;
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.crumbCurrent {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.crumbSlash {
+  margin-right: 10px;
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+.label {
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--text-secondary);
+}
+
+.actions {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex: none;
+}
+
+@media (max-width: 899px) {
+  .row {
+    margin: 56px 0 20px;
+  }
+  .first {
+    --sticky-top: var(--canvas-pad-y);
+    top: var(--sticky-top);
+    margin-top: 0;
+  }
+}
+
+/* No phone override any more. --canvas-pad-y IS the wordmark clearance at
+   this width, so the bar sticks exactly where the content starts, and one
+   token moves the header, the canvas and this together. */

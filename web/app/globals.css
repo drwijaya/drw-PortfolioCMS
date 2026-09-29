@@ -1,0 +1,862 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   TOKENS
+   The palette keeps the original character while meeting WCAG AA contrast.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Type roles. Two faces only; the script face was retired.
+     --font-display and --font-body are injected by next/font in layout.tsx. */
+  --font-display-stack: var(--font-display), Georgia, 'Times New Roman', serif;
+  --font-body-stack: var(--font-body), -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, sans-serif;
+
+  /* ── Light theme ──────────────────────────────────────────────────
+     The brand palette (#644331, #E3D4BD, #A95F37) dresses the ground,
+     the rules and the accent. Type is not in it: body copy stays black.
+     --bg is the wash's INNER stop, not an average: every solid that has
+     to disappear into the page (the sticky header's mask, the sidebar
+     column, a tag) sits in the top-left region where the wash still
+     reads as #fff1ea. */
+  --bg: #fff1ea;
+  --bg-wash: radial-gradient(circle at 0% 0%, #fff1ea 0%, #ffffff 100%);
+  --surface: #ffffff;
+  --border: #e3d4bd;
+  /* Ink stays black. The brand browns are accent and ground only: a
+     paragraph set in #644331 reads as a coloured note, not as body copy. */
+  --text-primary: #2e2a26;
+  --text-secondary: #6b6258;
+  /* #A95F37 as given lands at 4.34:1 on this ground, under AA, which the
+     header of this file promises. Eight percent darker clears it on all
+     three light grounds (4.93 on --bg, 5.44 on --surface, 4.55 on
+     --bg-alternate) and is indistinguishable at label sizes. */
+  --accent: #9c5833;
+  --accent-rgb: 156, 88, 51;
+  --accent-hover: #82441f;
+  /* a tint of the tan, so a fill and its border come from one colour */
+  --bg-alternate: #f5e9da;
+
+  /* Pill fill: a named role, because dark needs a different source token */
+  --pill-rest: var(--bg-alternate);
+  /* The state fill is the brand brown, not the ink. A nav pill is chrome,
+     which is exactly where the palette's darkest colour belongs, and it
+     keeps the fill from reading as a block of body text. */
+  --pill-active: #644331;
+
+  /* Category tags */
+  --tag-sage: #a8c3a0;
+  --tag-dusty-blue: #9db4c9;
+  --tag-mustard: #e0c46e;
+  --tag-terracotta: #d99c82;
+  --tag-sage-text: #344b30;
+  --tag-dusty-blue-text: #2d3d4e;
+  --tag-mustard-text: #594614;
+  --tag-terracotta-text: #5d3120;
+
+  --status-online: #2f7a4f;
+
+  --shadow-sm: 0 1px 3px rgba(46, 42, 38, 0.07);
+  --shadow-md: 0 4px 16px rgba(46, 42, 38, 0.09);
+  --shadow-lg: 0 8px 32px rgba(46, 42, 38, 0.12);
+  --shadow-thumb: 0 18px 50px rgba(46, 42, 38, 0.18);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  /* ── Fluid type scale ── */
+  --step--2: clamp(0.62rem, 0.60rem + 0.10vw, 0.67rem);
+  --step--1: clamp(0.69rem, 0.66rem + 0.14vw, 0.76rem);
+  --step-0: clamp(0.81rem, 0.78rem + 0.17vw, 0.89rem);
+  --step-1: clamp(0.95rem, 0.90rem + 0.26vw, 1.11rem);
+  --step-2: clamp(1.12rem, 1.04rem + 0.40vw, 1.39rem);
+  --step-3: clamp(1.32rem, 1.20rem + 0.60vw, 1.74rem);
+  --step-4: clamp(1.55rem, 1.37rem + 0.89vw, 2.17rem);
+  --display: clamp(2.5rem, 1rem + 9vw, 11rem);
+
+  /* ── Layout: compact ── */
+  /* 248, not 232: "David Rizky Wijaya" has to sit on one line without
+     shrinking the type into nothing. 248 - 44 padding = 204px of column. */
+  --sidebar-w: 248px;
+  --sidebar-pad-y: 36px;
+  --sidebar-pad-x: 22px;
+  /* Was 1180, which left 412px dead at 1920 and 1052px at 2560. */
+  --canvas-max: 1560px;
+  --canvas-pad-y: 56px;
+  --canvas-pad-x: 48px;
+  --canvas-pad-bottom: 120px;
+
+  /* ── mobile dock ───────────────────────────────────────────────────
+     The chrome at the two edges of a phone. Named here rather than in
+     the component so the canvas can reserve room for something it never
+     renders, and so one number moves both. */
+  --header-h: 44px;
+  --dock-h: 48px;
+  --dock-inset: 20px;   /* lines the chrome up with the content gutter */
+  --dock-gap: 8px;      /* panel to bar, and bar to chevron */
+  --dock-edge: 12px;    /* bar to viewport, before the safe area */
+  /* Body copy still needs a measure; filling 1500px with prose is unreadable. */
+  --measure: 68ch;
+
+  /* ── anchor clearance ──────────────────────────────────────────────
+     What a jumped-to `#id` has to clear. Two tokens, because two
+     different elements are sticky depending on which page you are on,
+     and a single number was wrong for one of them on every viewport.
+     Measured at 402pt: the reader header is 152px tall and the rule it
+     replaced reserved 52px, so every shared chapter link opened a
+     chapter sitting 100px underneath the bar. */
+  --anchor-offset-page: calc(var(--canvas-pad-y) + 72px);
+  --anchor-offset-reader: clamp(24px, 6vh, 56px);
+
+  /* ═══ MOTION SYSTEM ═══════════════════════════════════════════════
+     Seven durations, four easings, one stagger. If a value is needed
+     that is not here, extend this block. Never inline a number.
+     See MOTION-SYSTEM.md §3.
+     ════════════════════════════════════════════════════════════════ */
+
+  --dur-tap:    90ms;   /* press feedback                       */
+  --dur-quick: 150ms;   /* hover, focus, colour                 */
+  --dur-base:  260ms;   /* an element entering or leaving       */
+  --dur-move:  340ms;   /* something travelling across the page */
+  --dur-theme: 620ms;   /* deliberate radial palette reveal       */
+  --dur-page:  420ms;   /* total route-change budget            */
+  --dur-tell:  620ms;   /* the deliberate reveal, once          */
+
+  /* Exits are 60% of their enter. Leaving is decisive; arriving settles. */
+  --dur-base-out: 156ms;
+  --dur-move-out: 204ms;
+
+  --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);      /* expo-out            */
+  --ease-in:   cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-move: cubic-bezier(0.1, 0.9, 0.2, 1);     /* fast start, glide   */
+  --ease-theme: cubic-bezier(0.65, 0, 0.35, 1);    /* even palette sweep  */
+
+  /* Metro cadence. The old 60-80ms is what made the grid feel floaty. */
+  --stagger: 34ms;
+
+  --travel-xs:  6px;
+  --travel-sm: 14px;
+  --travel-md: 28px;
+  --travel-lg: 64px;
+  /* How far a whole ROUTE travels. Split from --travel-lg because 64px
+     reads as a nudge on a 402pt screen and as a shove on a 27" display:
+     this is the one distance that has to be relative to the viewport it
+     crosses. See MOTION-SYSTEM.md 3. */
+  --travel-page: var(--travel-lg);
+}
+
+/* Dark reads the palette from the other end: the brown becomes the ground
+   and the wash keeps its top-left anchor, so both themes are lit from the
+   same corner. Type stays neutral in both. */
+[data-theme='dark'] {
+  --bg: #1c1310;
+  --bg-wash: radial-gradient(circle at 0% 0%, #2a1c15 0%, #1c1310 100%);
+  --surface: #2a1d16;
+  --border: #3f2e23;
+  /* the dark counterpart of black ink: neutral off-white, not the tan */
+  --text-primary: #f2ece3;
+  --text-secondary: #b0a89c;
+  --accent: #d98a5c;
+  --accent-rgb: 217, 138, 92;
+  --accent-hover: #eda072;
+  --bg-alternate: #231812;
+
+  /* --bg-alternate (#231812) sits too close to --bg (#1C1310) to read as
+     a raised pill. --surface is the correct fill in dark. */
+  --pill-rest: var(--surface);
+  /* Dark inverts: the brown is the ground here, so the state fill has to
+     be the light end or the current pill disappears into the column. */
+  --pill-active: var(--text-primary);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --shadow-thumb: 0 18px 50px rgba(0, 0, 0, 0.5);
+
+  --status-online: #6ce89f;
+}
+
+@media (max-width: 1279px) {
+  :root {
+    --sidebar-w: 216px;
+    --canvas-pad-x: 36px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  /* iOS flashes a dark box over every tapped link and button. Desktop has
+     no such thing, and the pill/tile states already show what was pressed. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The wash is a fixed layer rather than `background-attachment: fixed`,
+   which iOS Safari has never handled without jank. It sits behind every
+   page element and in front of body's own solid fill, so --bg stays the
+   correct fallback and the correct match for anything opaque. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--bg-wash);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-body-stack);
+  font-size: var(--step-0);
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition: background-color var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Justified body copy, site-wide. Hyphenation is not optional here: without
+   it, justifying a narrow column opens rivers of white space between the
+   words. A single-line paragraph is unaffected: the last line of justified
+   text is always set flush left. */
+p {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus,var(--accent));
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Display face is reserved for headers and the wordmark. */
+.display {
+  font-family: var(--font-display-stack);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+}
+
+/* Screen-reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SHELL
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.shell {
+  min-height: 100vh;
+}
+
+.canvas {
+  view-transition-name: route-stage;
+  margin-left: var(--sidebar-w);
+  padding: var(--canvas-pad-y) var(--canvas-pad-x) var(--canvas-pad-bottom);
+  /* width:auto already resolves to (viewport - margin-left), so max-width
+     alone is the cap. Wrapping it in min(100%, …) overflows, because 100%
+     resolves against the full viewport and ignores the margin. */
+  max-width: calc(var(--canvas-max) + var(--canvas-pad-x) * 2);
+}
+
+@media (max-width: 679px) {
+  :root {
+    /* The canvas pads itself clear of chrome it does not render. Both
+       edges are fixed, so the page has to reserve their height or the
+       first heading opens underneath the wordmark and the case-study
+       footer opens underneath the tab bar.
+
+       These are the CANVAS tokens rather than new ones, which means
+       PageHeader's sticky offset, the case study's negative margin and
+       the anchor offsets all follow without being told. */
+    --canvas-pad-y: calc(
+      env(safe-area-inset-top, 0px) + var(--dock-edge) + var(--header-h) + 16px
+    );
+    --canvas-pad-x: 20px;
+    --canvas-pad-bottom: calc(
+      env(safe-area-inset-bottom, 0px) + var(--dock-edge) + var(--dock-h) + 24px
+    );
+
+    /* PageHeader.first sticks at --canvas-pad-y and measures 34px. */
+    --anchor-offset-page: calc(var(--canvas-pad-y) + 44px);
+    /* Nothing is sticky over a case study any more: the reader column is
+       the dock now, and the dock is at the other end of the screen. Only
+       the wordmark has to be cleared. */
+    --anchor-offset-reader: calc(var(--canvas-pad-y) + 8px);
+
+    /* The reader card docks between the page and the tab bar, so a
+       project page has to reserve its height on top of the bar's. Two
+       lines of title is the tallest it gets; measured at 99px. */
+    --dock-card-h: 112px;
+
+    /* 64px is a nudge at this width. 22vw is a push. */
+    --travel-page: 22vw;
+  }
+
+  .canvas {
+    margin-left: 0;
+  }
+
+  /* Justification needs room to hide its adjustments in. A phone column is
+     ~40 characters wide, and at that measure the extra space has nowhere to
+     go but between the words: the case-study callouts opened rivers three
+     and four spaces wide, and `hyphens: auto` could not close them. Ragged
+     right is the smaller compromise below this width. */
+  p {
+    text-align: left;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CURSOR: the layer itself. States live in the component's module.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+body[data-cursor-ready] *,
+body[data-cursor-ready] {
+  cursor: none !important;
+}
+
+/* Text entry is the one place the native pointer is better than the disc.
+   The layer hides itself over these (CursorState 'hide'), so the caret is
+   the only pointer on screen rather than a second one under a circle. */
+body[data-cursor-ready] :is(
+    textarea,
+    input:not([type]),
+    input[type='text'],
+    input[type='email'],
+    input[type='search'],
+    input[type='url'],
+    input[type='tel'],
+    input[type='password'],
+    input[type='number'],
+    [contenteditable='true']
+  ) {
+  cursor: text !important;
+}
+
+/* Matches the layer's own guard: the native cursor comes back only where
+   the custom one is not drawn at all. */
+@media (any-hover: none) {
+  body[data-cursor-ready] *,
+  body[data-cursor-ready] {
+    cursor: auto !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   MOTION GUARD
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Reduced motion REPLACES, it never removes. Travel becomes a short fade;
+   feedback survives. Removing it entirely is an accessibility failure
+   dressed up as one. See MOTION-SYSTEM.md rule 8. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-tap: 1ms;
+    --dur-quick: 120ms;
+    --dur-base: 120ms;
+    --dur-move: 120ms;
+    --dur-theme: 120ms;
+    --dur-page: 120ms;
+    --dur-tell: 120ms;
+    --dur-base-out: 100ms;
+    --dur-move-out: 100ms;
+    --stagger: 0ms;
+    --travel-xs: 0px;
+    --travel-sm: 0px;
+    --travel-md: 0px;
+    --travel-lg: 0px;
+    --travel-page: 0px;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   VIEW TRANSITIONS: the Continuum tier.
+   Named project elements interpolate between routes through the transition
+   provider; @view-transition also progressively enhances document loads.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@view-transition {
+  navigation: auto;
+}
+
+/* The morph has to LAND before the destination fades in around it.
+   At --dur-move the thumbnail was still travelling while the reader
+   sidebar had already arrived with an empty chip slot, which reads as the
+   thumbnail disappearing and then coming back. --dur-base puts it in its
+   slot first; the page then settles around it. */
+::view-transition-group(*) {
+  animation-duration: var(--dur-base);
+  animation-timing-function: var(--ease-move);
+}
+
+::view-transition-old(*),
+::view-transition-new(*) {
+  mix-blend-mode: normal;
+}
+
+/* A named element that exists in ONLY one of the two pages (a project
+   tile leaving /works for /about, say) gets no morph partner, so it kept
+   the UA's own long cross-fade and hung around over the incoming page
+   after the stage beneath it had already gone. `:only-child` is true
+   exactly when there is no counterpart, so morphing pairs (a tile turning
+   into the reader chip) are untouched. */
+::view-transition-old(*):only-child {
+  animation: var(--dur-move-out) var(--ease-move) both route-solo-out;
+}
+
+::view-transition-new(*):only-child {
+  animation: var(--dur-page) var(--ease-out) var(--dur-quick) both
+    route-solo-in;
+}
+
+@keyframes route-solo-out { to { opacity: 0; } }
+@keyframes route-solo-in { from { opacity: 0; } }
+
+::view-transition-old(root) {
+  animation: none;
+}
+
+::view-transition-new(root) {
+  animation: none;
+}
+
+/* ── theme change: one reveal, one source ─────────────────────────────
+   Route transitions divide the interface into several moving snapshots.
+   A palette change is the opposite: it is one surface illuminated from the
+   control that caused it. ThemeToggle sets this attribute before capture,
+   so the route names are handed back and the page becomes one root image.
+
+   The clicked toggle keeps one dedicated snapshot. Its icon can therefore
+   settle independently above the reveal without a second live animation. */
+html[data-theme-transition] .canvas,
+html[data-theme-transition] .vt,
+html[data-theme-transition] #dock-panel,
+html[data-theme-transition] [data-chrome] {
+  view-transition-name: none !important;
+}
+
+html[data-theme-transition] [data-theme-transition-source='true'] {
+  view-transition-name: theme-toggle !important;
+}
+
+html[data-theme-transition] *,
+html[data-theme-transition] *::before,
+html[data-theme-transition] *::after {
+  transition: none !important;
+}
+
+html[data-theme-transition]::view-transition-old(root) {
+  animation: none;
+  z-index: 1;
+}
+
+html[data-theme-transition]::view-transition-new(root) {
+  z-index: 2;
+  animation: theme-reveal var(--dur-theme) var(--ease-theme) both;
+}
+
+html[data-theme-transition]::view-transition-group(theme-toggle) {
+  z-index: 3;
+  animation: none;
+}
+
+html[data-theme-transition]::view-transition-old(theme-toggle),
+html[data-theme-transition]::view-transition-new(theme-toggle) {
+  mix-blend-mode: normal;
+}
+
+html[data-theme-transition='to-dark']::view-transition-old(theme-toggle) {
+  animation: theme-icon-out-dark 180ms var(--ease-in) both;
+}
+
+html[data-theme-transition='to-dark']::view-transition-new(theme-toggle) {
+  animation: theme-icon-in-dark 360ms var(--ease-theme) 130ms both;
+}
+
+html[data-theme-transition='to-light']::view-transition-old(theme-toggle) {
+  animation: theme-icon-out-light 180ms var(--ease-in) both;
+}
+
+html[data-theme-transition='to-light']::view-transition-new(theme-toggle) {
+  animation: theme-icon-in-light 360ms var(--ease-theme) 130ms both;
+}
+
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0 at var(--theme-x) var(--theme-y));
+  }
+  to {
+    clip-path: circle(var(--theme-radius) at var(--theme-x) var(--theme-y));
+  }
+}
+
+@keyframes theme-icon-out-dark {
+  to { opacity: 0; transform: rotate(-36deg) scale(0.68); }
+}
+
+@keyframes theme-icon-in-dark {
+  from { opacity: 0; transform: rotate(44deg) scale(0.62); }
+}
+
+@keyframes theme-icon-out-light {
+  to { opacity: 0; transform: rotate(36deg) scale(0.68); }
+}
+
+@keyframes theme-icon-in-light {
+  from { opacity: 0; transform: rotate(-44deg) scale(0.62); }
+}
+
+/* The stage snapshots must NOT stretch to the group's animating box.
+   /works is 679px tall and /about is 2916px, so the group interpolates
+   between them, and with the default `object-fit: fill` the outgoing
+   page is scaled 4x vertically while it fades. That warping is what read
+   as jitter. Natural size, anchored to the top, no scaling. */
+::view-transition-old(route-stage),
+::view-transition-new(route-stage) {
+  object-fit: none;
+  object-position: top center;
+}
+
+::view-transition-old(route-stage) {
+  animation: var(--dur-move-out) var(--ease-move) both route-stage-out;
+}
+
+::view-transition-new(route-stage) {
+  animation: var(--dur-page) var(--ease-out) var(--dur-quick) both
+    route-stage-in;
+}
+
+::view-transition-old(route-sidebar),
+::view-transition-new(route-sidebar) {
+  object-fit: none;
+  object-position: top center;
+}
+
+::view-transition-old(route-sidebar) {
+  animation: var(--dur-move-out) var(--ease-move) both route-sidebar-out;
+}
+
+::view-transition-new(route-sidebar) {
+  animation: var(--dur-page) var(--ease-out) var(--dur-quick) both
+    route-sidebar-in;
+}
+
+/* The outgoing stage has to reach 0. Holding it at 0.82 with fill:both
+   left a readable copy of the previous page stacked over the new one for
+   as long as the transition lived: two pages at once, not a cross-fade. */
+@keyframes route-stage-out {
+  to {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0);
+  }
+}
+
+/* From 0, not 0.82. Starting the incoming page at 82% while the outgoing
+   one is still at 100% stacks two near-opaque copies of the site on top of
+   each other, which is what the overlap was. */
+@keyframes route-stage-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+}
+
+@keyframes route-sidebar-out {
+  to {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0);
+  }
+}
+
+@keyframes route-sidebar-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+}
+
+/* ── named chrome ──────────────────────────────────────────────────────
+   Every view-transition-name on this site is declared HERE, and that is not
+   organisation, it is a requirement. Next 16 scopes the VALUE of
+   `view-transition-name` inside a CSS module exactly as it scopes a class:
+   `route-dock` compiles to `Mobile-module__JHoqsa__route-dock`, while the
+   ::view-transition rules that act on it go on looking for the plain name.
+   Nothing errors. The chrome just quietly stops being pinned, the reader
+   column quietly stops fading, and the site looks broken in the exact ways
+   it took several rounds to fix. A global stylesheet is never scoped, so a
+   name written here means the same thing on both major versions.
+
+   The elements are reached by `data-chrome` and by the drawer's own id,
+   both of which are real markup rather than hashed class names. */
+
+html[data-route-transition-kind='reader'] #dock-panel {
+  view-transition-name: route-sidebar;
+}
+
+@media (max-width: 679px) {
+  [data-chrome='header'] {
+    view-transition-name: route-header;
+  }
+  [data-chrome='dock'] {
+    view-transition-name: route-dock;
+  }
+  [data-chrome='veil'][data-edge='top'] {
+    view-transition-name: route-veil-top;
+  }
+  [data-chrome='veil'][data-edge='bottom'] {
+    view-transition-name: route-veil-bottom;
+  }
+
+  /* The phone's drawer is a card on the reading surface, not a column
+     arriving from off-canvas, so it takes its own name and holds still
+     rather than fading in over the page. Equal specificity to the reader
+     rule above and later in the file, which is what settles the tie. */
+  #dock-panel,
+  html[data-route-transition-kind] #dock-panel {
+    view-transition-name: route-panel;
+  }
+}
+
+/* ── the mobile chrome sits still ──────────────────────────────────────
+   The header and the tab bar are `position: fixed`, so without a name of
+   their own they are captured in the root snapshot and carried along by
+   whatever the page is doing. MOTION-SYSTEM rule 5: persistent chrome
+   never re-animates. Naming them lifts them out of the page's snapshot;
+   `animation: none` then holds them exactly where they are while the
+   route slides underneath.
+
+   The PANEL is deliberately not in this list. Its contents genuinely
+   change between the identity column and the reader column, so it keeps
+   the ordinary route-sidebar cross-fade. */
+
+::view-transition-old(route-header),
+::view-transition-new(route-header),
+::view-transition-old(route-dock),
+::view-transition-new(route-dock),
+::view-transition-old(route-veil-top),
+::view-transition-new(route-veil-top),
+::view-transition-old(route-veil-bottom),
+::view-transition-new(route-veil-bottom) {
+  animation: none;
+}
+
+/* ── the drawer panel: still, but not immortal ─────────────────────────
+   Pinning both halves of this pair was half a fix and half a new bug.
+   The arriving half being opaque and instant is right: a solid card must
+   not have the case study legible through it. The LEAVING half being
+   pinned meant the old card never faded at all — so walking out of a
+   project left its card painted over /about and /works for the whole
+   420ms, while the group quietly dragged it 211px up the screen towards
+   the identity panel's taller box. That is what read as a stale card
+   floating in the middle of the page.
+
+   So: the group holds still, the old half leaves on the standard exit,
+   and the new half still arrives instantly and opaque.
+
+   `object-fit: none` because the two boxes are different heights — a
+   99px card stretched into a 320px identity panel is a smear, and the
+   default is `fill`. Anchored to the bottom, which is the edge the two
+   share. Same reasoning as route-stage. */
+::view-transition-group(route-panel) {
+  animation: none;
+}
+
+::view-transition-old(route-panel),
+::view-transition-new(route-panel) {
+  object-fit: none;
+  object-position: bottom center;
+}
+
+/* Not a fade — gone. A 156ms fade is still 156ms of the project you just
+   left painted over the page you asked for, and on a slower device, where
+   the route takes longer to commit, that is exactly long enough to read as
+   a card floating in the middle of the screen. The card is chrome for a
+   route you are no longer on, so it leaves with the tap, the way the ink
+   under a tab does. Nothing about this depends on timing any more. */
+::view-transition-old(route-panel) {
+  animation: none;
+  opacity: 0;
+}
+
+::view-transition-new(route-panel) {
+  animation: none;
+}
+
+/* ── directional route change: prev / next along the project sequence ──
+   Forward enters from the right, back from the left (MOTION-SYSTEM.md §2).
+   Only `animation-name` is overridden, so duration, delay, easing and fill
+   stay inherited from the rules above and the slide cannot drift out of
+   sync with the vertical version it replaces.
+
+   NOTE the selectors have no space. ::view-transition-old() is a
+   pseudo-element OF the document element, not a descendant of it; a space
+   here is valid CSS that matches nothing and fails silently. */
+
+html[data-route-direction='forward']::view-transition-old(route-stage) {
+  animation-name: route-slide-out-left;
+}
+html[data-route-direction='forward']::view-transition-new(route-stage) {
+  animation-name: route-slide-in-right;
+}
+html[data-route-direction='back']::view-transition-old(route-stage) {
+  animation-name: route-slide-out-right;
+}
+html[data-route-direction='back']::view-transition-new(route-stage) {
+  animation-name: route-slide-in-left;
+}
+
+/* Per-project names are dynamic, so they arrive as a custom property on
+   this class rather than as a `view-transition-name` inline style. That is
+   what lets the rule below cancel them with ordinary specificity. */
+.vt {
+  view-transition-name: var(--vt-name, none);
+}
+
+/* Both sides carry a differently-named copy of the same role
+   (project-<slug>-title), so neither can find a morph partner and each would
+   be lifted OUT of the route-stage snapshot by the :only-child rule above to
+   cross-fade on its own, floating over the slide. Handing the names back
+   lets the page travel as one sheet. */
+html[data-route-direction] .vt {
+  view-transition-name: none;
+}
+
+@keyframes route-slide-out-left {
+  to {
+    opacity: 0;
+    transform: translate3d(calc(var(--travel-page) * -1), 0, 0);
+  }
+}
+@keyframes route-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--travel-page), 0, 0);
+  }
+}
+@keyframes route-slide-out-right {
+  to {
+    opacity: 0;
+    transform: translate3d(var(--travel-page), 0, 0);
+  }
+}
+@keyframes route-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translate3d(calc(var(--travel-page) * -1), 0, 0);
+  }
+}
+
+/* The system back gesture. One-sided, because popstate leaves nothing to
+   snapshot the outgoing page from — see RouteTransition. It reuses the very
+   keyframes a clicked prev/next uses, so a pop and a press travel the same
+   distance in the same direction with the same easing, which is the whole
+   point of running it at all. --travel-page is 0 under reduced motion, so
+   this is already a plain fade there (rule 8). */
+main.canvas[data-pop='back'] {
+  animation: var(--dur-page) var(--ease-out) both route-slide-in-left;
+}
+main.canvas[data-pop='forward'] {
+  animation: var(--dur-page) var(--ease-out) both route-slide-in-right;
+}
+
+@keyframes route-reduced-out { to { opacity: 0; } }
+@keyframes route-reduced-in { from { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*) {
+    animation-duration: 1ms !important;
+  }
+
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: var(--dur-base) !important;
+    animation-timing-function: linear !important;
+  }
+
+  ::view-transition-old(route-stage),
+  ::view-transition-old(route-sidebar) {
+    animation-name: route-reduced-out !important;
+    animation-duration: var(--dur-base-out) !important;
+  }
+
+  ::view-transition-new(route-stage),
+  ::view-transition-new(route-sidebar) {
+    animation-name: route-reduced-in !important;
+  }
+}
